@@ -1,0 +1,62 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Ayush Verma">
+    <meta name="description" content="Login page">
+    <meta name="keywords" content="Login, Django, TailwindCSS">
+    <link rel="stylesheet" href="{% static 'a/index.css' %}">
+    <link rel="shortcut icon" href="{% static 'a/app-window.png' %}" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Login</title>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen">
+    <nav class="flex justify-evenly text-xs sm:text-sm md:text-md p-2 m-2 rounded-lg border-2 border-solid border-gray-800 backdrop-blur-sm w-full max-w-md">
+        <a href="/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Home</a>
+        <a href="/signup/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Signup</a>
+    </nav>
+
+    <div class="backdrop-blue-lg border-2 border-solid border-white p-6 rounded-lg shadow-lg w-full max-w-sm mt-4">
+        <h2 class="text-center text-2xl font-semibold mb-4">Login</h2>
+
+{% if messages %}
+    <div class="w-full max-w-sm mb-4">
+        {% for message in messages %}
+            <div class="p-3 rounded mb-2 {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+        <form method="POST" class="flex flex-col gap-4">
+            {% csrf_token %}
+            <div>
+                <label for="email" class="block text-gray-400 mb-1">Email</label>
+                <input type="email" name="email" id="email" required
+                       class="w-full px-3 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label for="password" class="block text-gray-400 mb-1">Password</label>
+                <input type="password" name="password" id="password" required
+                       class="w-full px-3 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <button type="submit"
+                    class="cursor-pointer bg-blue-600 hover:bg-blue-700 transition-all text-white py-2 rounded mt-3">
+                Login
+            </button>
+        </form>
+
+        <p class="text-gray-400 text-sm mt-4 text-center">
+            Don’t have an account?
+            <a href="/signup/" class="cursor-pointer text-blue-400 hover:underline">Sign up</a>
+        </p>
+    </div>
+</body>
+</html>

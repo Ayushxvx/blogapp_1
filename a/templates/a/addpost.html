@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Ayush Verma">
+    <meta name="description" content="Add a new post">
+    <meta name="keywords" content="Blog, Django, TailwindCSS, Upload">
+    <link rel="shortcut icon" href="{% static 'a/app-window.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'a/index.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Add Post</title>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+
+    <nav class="flex justify-evenly text-xs sm:text-sm md:text-md p-2 m-2 rounded-lg border-2 border-solid border-gray-800 backdrop-blur-sm">
+        <a href="/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Home</a>
+        <a href="/profile/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Profile</a>
+        <a href="/logout/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Logout</a>
+    </nav>
+
+    <div class="max-w-lg mx-auto mt-10 p-8 backdrop-blur-lg rounded-lg shadow-lg border-2 border-solid border-white">
+        <h1 class="text-2xl font-semibold mb-6 text-center">Add New Post</h1>
+
+{% if messages %}
+    <div class="w-full max-w-sm mb-4">
+        {% for message in messages %}
+            <div class="p-3 rounded mb-2 {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+
+            <div>
+                <label for="title" class="block mb-2 text-sm font-medium text-gray-300">Title</label>
+                <input type="text" id="title" name="title" required
+                    class="w-full px-4 py-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+            </div>
+
+            <div>
+                <label for="description" class="block mb-2 text-sm font-medium text-gray-300">Description</label>
+                <textarea id="description" name="description" rows="4" required
+                    class="w-full px-4 py-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"></textarea>
+            </div>
+
+            <div>
+                <label for="image" class="block mb-2 text-sm font-medium text-gray-300">Upload Image</label>
+                <input type="file" id="image" name="image" accept="image/*"
+                    class="w-full text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
+            </div>
+
+            <div>
+                <label for="video" class="block mb-2 text-sm font-medium text-gray-300">Upload Video</label>
+                <input type="file" id="video" name="video" accept="video/*"
+                    class="w-full text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
+            </div>
+
+            <div class="text-center">
+                <button type="submit"
+                    class="w-full cursor-pointer bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md font-semibold transition">
+                    Submit Post
+                </button>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

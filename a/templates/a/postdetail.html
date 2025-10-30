@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Ayush Verma">
+    <meta name="description" content="Post Details Page">
+    <meta name="keywords" content="Blog, Django, TailwindCSS, Post">
+    <link rel="stylesheet" href="{% static 'a/index.css' %}">
+    <link rel="shortcut icon" href="{% static 'a/app-window.png' %}" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>{{ post.title }}</title>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+
+    <nav class="flex justify-evenly text-xs sm:text-sm md:text-md p-2 m-2 rounded-lg border-2 border-solid border-gray-800 backdrop-blur-sm">
+        <a href="/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Home</a>
+        {% if user.is_authenticated %}
+        <a href="/profile/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Profile</a>
+        <a href="/logout/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Logout</a>
+        <a href="/addpost/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Add Post</a>
+        {% else %}
+        <a href="/login/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Login</a>
+        <a href="/signup/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Signup</a>
+        {% endif %}
+    </nav>
+
+    <section class="max-w-3xl mx-auto p-6 mt-8 backdrop-blur-lg border-2 border-solid border-white rounded-lg shadow-lg border border-gray-700">
+        <h1 class="text-3xl font-bold mb-4 text-center">{{ post.title }}</h1>
+
+        <p class="text-sm text-gray-400 mb-6 text-center">
+            Posted by <span class="text-blue-400">{{ post.author.username }}</span> 
+            on {{ post.created_at|date:"F j, Y" }}
+        </p>
+
+        {% if post.img %}
+        <img src="{{ post.img.url }}" alt="{{ post.title }}" class="w-8/12 mx-auto h-1/2 object-cover rounded-lg mb-6">
+        {% endif %}
+
+        {% if post.vid %}
+        <video controls class="w-full rounded-lg mb-6">
+            <source src="{{ post.vid.url }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        {% endif %}
+
+        <div class="text-gray-200 leading-relaxed whitespace-pre-line mb-6">
+            {{ post.description }}
+        </div>
+
+        <div class="flex justify-center gap-6 mb-8">
+            <form action="{% url 'like_post' post.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="cursor-pointer bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md text-white font-semibold transition">
+                    👍 Like ({{ post.likes.count }})
+                </button>
+            </form>
+            <form action="{% url 'dislike_post' post.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="cursor-pointer bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-white font-semibold transition">
+                    👎 Dislike ({{ post.dislikes.count }})
+                </button>
+            </form>
+        </div>
+
+        {% if user.is_authenticated %}
+        <form action="{% url 'add_comment' post.id %}" method="POST" class="mb-8">
+            {% csrf_token %}
+            <textarea name="comment" rows="3" required
+                class="w-full px-4 py-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                placeholder="Write your comment..."></textarea>
+            <button type="submit"
+                class="cursor-pointer mt-3 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md font-semibold transition">
+                💬 Add Comment
+            </button>
+        </form>
+        {% else %}
+        <p class="text-gray-400 text-center mb-8">You must <a href="/login/" class="text-blue-400 hover:underline">log in</a> to comment.</p>
+        {% endif %}
+
+        <div class="border-t border-gray-700 pt-6">
+            <h2 class="text-xl font-semibold mb-4">Comments ({{ post.comments.count }})</h2>
+
+            {% if post.comments.all %}
+                {% for comment in post.comments.all %}
+                <div class="mb-4 bg-gray-700 p-4 rounded-md">
+                    <div class="flex justify-between">
+                        <p class="font-semibold text-blue-400">{{ comment.author.username }}</p>
+                        <p class="text-gray-400 text-sm">{{ comment.created_at|date:"F j, Y, g:i a" }}</p>
+                    </div>
+                    <p class="text-gray-200 mt-2">{{ comment.text }}</p>
+
+                    {% if request.user == comment.author %}
+                    <form action="{% url 'del_comment' pk=post.id id=comment.id %}" method="POST" class="mt-2 text-right">
+                        {% csrf_token %}
+                        <button type="submit" class="cursor-pointer text-red-400 hover:text-red-500 text-sm font-semibold">
+                            🗑️ Delete
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-gray-400">No comments yet. Be the first to comment!</p>
+            {% endif %}
+        </div>
+
+        <div class="text-center mt-6">
+            <a href="/" class="inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md font-semibold transition">
+                ← Back to Home
+            </a>
+        </div>
+    </section>
+
+</body>
+</html>

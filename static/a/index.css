@@ -1,0 +1,7 @@
+body{
+    background-image:url('index_bg.png');
+    background-repeat:no-repeat;
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+}

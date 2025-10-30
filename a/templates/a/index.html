@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Ayush Verma">
+    <meta name="description" content="This is a blog site">
+    <meta name="keywords" content="HTML, CSS, JavaScript, Django, TailwindCSS">
+    <link rel="stylesheet" href="{% static 'a/index.css' %}">
+    <link rel="shortcut icon" href="{% static 'a/app-window.png' %}" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Postify</title>
+</head>
+<body class="bg-gray-900 text-white flex flex-col min-h-screen">
+
+    <nav class="flex justify-evenly text-xs sm:text-sm md:text-md p-2 m-2 rounded-lg border-2 border-solid border-gray-800 backdrop-blur-sm">
+        <a href="/" class="hover:scale-[1.05] transition-all text-gray-300 hover:text-white">Home</a>
+        {% if user.is_authenticated %}
+        <a href="/profile/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Profile</a>
+        <a href="/logout/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Logout</a>
+        <a href="/addpost/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Add Post</a>
+        {% else %}
+        <a href="/login/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Login</a>
+        <a href="/signup/" class="hover:scale-[1.05] text-gray-300 hover:text-white">Signup</a>
+        {% endif %}
+    </nav>
+
+    <section class="flex-grow max-w-6xl mx-auto p-4 mt-6">
+        <h1 class="text-3xl font-semibold mb-6 text-center">Recent Posts</h1>
+
+        {% if posts %}
+        <div id="posts" class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {% for post in posts %}
+            <a href="{% url 'post_detail' post.id %}">
+                <div class="cursor-pointer backdrop-blur-lg border-2 border-solid border-white border border-gray-700 rounded-lg shadow-md overflow-hidden hover:scale-[1.02] transition duration-200">
+                
+                {% if post.img %}
+                <img src="{{ post.img.url }}" alt="{{ post.title }}" class="w-8/12 h-1/2 mx-auto object-cover m-2 rounded-lg">
+                {% else %}
+                <div class="w-full h-48 bg-gray-700 flex items-center justify-center text-gray-400 italic">
+                    No Image Available
+                </div>
+                {% endif %}
+                
+                <div class="p-4">
+                    <h2 class="text-xl font-bold mb-2">{{ post.title }}</h2>
+                    <p class="text-gray-300 text-sm mb-3">
+                        {{ post.description|truncatechars:200 }}
+                    </p>
+                    <p class="text-gray-500 text-xs">Published on {{ post.created_at|date:"F j, Y" }}</p>
+                </div>
+            </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-center text-gray-400 mt-10">No posts available yet. Check back soon!</p>
+        {% endif %}
+    </section>
+
+    <footer class="text-center text-gray-500 text-sm py-4 border-t border-gray-800 mt-8">
+        Made with ❤️ by <a href="https://polite-crostata-6170fa.netlify.app/" target="_blank">
+            <span class="text-blue-400 font-semibold">Ayush Verma</span>
+        </a>
+    </footer>
+
+</body>
+</html>
